@@ -1,7 +1,7 @@
 stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.o: \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.c \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
- C:/Users/xieyu/Documents/Microprocessor/Lab02_Interrupts_Timers_Template.zip_expanded/LAB-02-Template/inc/stm32f7xx_hal_conf.h \
+ C:/Users/xieyu/Documents/Microprocessor/lab2/inc/stm32f7xx_hal_conf.h \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Device/ST/STM32F7xx/Include/stm32f7xx.h \
@@ -30,7 +30,7 @@ stm32lib/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.o: \
 
 C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 
-C:/Users/xieyu/Documents/Microprocessor/Lab02_Interrupts_Timers_Template.zip_expanded/LAB-02-Template/inc/stm32f7xx_hal_conf.h:
+C:/Users/xieyu/Documents/Microprocessor/lab2/inc/stm32f7xx_hal_conf.h:
 
 C:/Users/xieyu/Documents/Microprocessor/stm32lib/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h:
 

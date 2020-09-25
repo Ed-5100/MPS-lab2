@@ -36,7 +36,7 @@ float averageScore = 0;
 unsigned int iterations = 0;
 int stage=0;
 static int set=0;
-static int task=4;
+static int task=2;
 static int time=0;
 
 int main() {
@@ -183,10 +183,14 @@ void Init_Timer() {
 
 	// Generate update events to auto reload.
 	TIM6->EGR |= TIM_EGR_UG;
-
+	TIM6->SR &= 0xFFFFFFFE;
+	asm ( "nop" );
+	asm ( "nop" );
 	// Enable Update Interrupts.
 	TIM6->DIER |= TIM_DIER_UIE;
-
+	//TIM6->SR &= 0xFFFFFFFE;
+	printf("%u",TIM6->SR);
+	fflush(stdout);
 	// Start the timer.
 	TIM6->CR1 |= TIM_CR1_CEN;
 }
@@ -235,7 +239,6 @@ void Init_GPIO_EXTI8() {
 void TIM6_DAC_IRQHandler() {
 	// Clear Interrupt Bit
 	TIM6->SR &= 0xFFFFFFFE;
-
 	// Other code here:
 	time+=1;
 	if(task==2){

@@ -37,7 +37,7 @@ unsigned int iterations = 0;
 int stage=0;
 static int set=0;
 static int task=2;
-static int time=0;
+static unsigned long time=0;
 
 int main() {
 	Sys_Init();
@@ -189,10 +189,9 @@ void Init_Timer() {
 	// Enable Update Interrupts.
 	TIM6->DIER |= TIM_DIER_UIE;
 	//TIM6->SR &= 0xFFFFFFFE;
-	printf("%u",TIM6->SR);
-	fflush(stdout);
+
 	// Start the timer.
-	TIM6->CR1 |= TIM_CR1_CEN;
+	TIM6->CR1 |= 0x05;
 }
 
 
@@ -255,6 +254,9 @@ void TIM6_DAC_IRQHandler() {
 			fflush(stdout);
 		}
 	}
+	asm ("nop");
+	printf("%u",TIM6->ARR);
+	fflush(stdout);
 	asm ("nop");
 }
 

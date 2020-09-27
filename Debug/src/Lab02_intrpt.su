@@ -3,9 +3,9 @@ Lab02_intrpt.c:86:6:task1_reg_update	8	static
 Lab02_intrpt.c:95:6:t4_init	8	static
 Lab02_intrpt.c:101:6:t4_update	32	static
 Lab02_intrpt.c:149:6:blinkScreen	8	static
-Lab02_intrpt.c:167:6:Init_Timer	8	static,ignoring_inline_asm
-Lab02_intrpt.c:199:6:Init_GPIO_EXTI8	4	static,ignoring_inline_asm
-Lab02_intrpt.c:239:6:TIM6_DAC_IRQHandler	8	static,ignoring_inline_asm
-Lab02_intrpt.c:262:6:EXTI9_5_IRQHandler	4	static,ignoring_inline_asm
-Lab02_intrpt.c:272:6:xxx_IRQHandler	4	static
-Lab02_intrpt.c:276:6:HAL_GPIO_EXTI_Callback	16	static
+Lab02_intrpt.c:167:6:Init_Timer	4	static,ignoring_inline_asm
+Lab02_intrpt.c:198:6:Init_GPIO_EXTI8	4	static,ignoring_inline_asm
+Lab02_intrpt.c:238:6:TIM6_DAC_IRQHandler	8	static,ignoring_inline_asm
+Lab02_intrpt.c:264:6:EXTI9_5_IRQHandler	4	static,ignoring_inline_asm
+Lab02_intrpt.c:274:6:xxx_IRQHandler	4	static
+Lab02_intrpt.c:278:6:HAL_GPIO_EXTI_Callback	16	static

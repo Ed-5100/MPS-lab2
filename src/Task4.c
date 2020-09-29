@@ -8,26 +8,17 @@
 //
 //
 // -- Imports ---------------
-//
 #include "init.h"
 #include <stdint.h>
 #include<stdlib.h>
 
-//
-//
-// -- Prototypes ------------
-//
 void blinkScreen();
 void Init_GPIO_EXTI8();
 void Init_Timer();
-void task1_reg_update();
 void t4_init();
+void Init_GPIO_interrup_HAL();
+void t4_update();
 
-
-//
-//
-// -- Code Body -------------
-//
 volatile uint8_t timeUpdated = 0;
 volatile uint8_t buttonPressed = 0;
 volatile uint8_t buttonReleased = 0;
@@ -41,53 +32,56 @@ static int set=0;//set flag in tast 1
 static int task=4;//indicate which task to check off
 static unsigned long time=0;// timer counter
 
-int main() {
+int main(){
 	Sys_Init();
-	switch(task){// swhich to different init function by task
-	case 11: Init_GPIO_EXTI8(); break;
-	case 12: break;
-	case 2: Init_Timer(); break;
-	case 3:	break;
-	case 4:
-		Init_GPIO_EXTI8();
-		Init_Timer();
-		t4_init();
-		break;
-	}
-
-	printf("\033c\033[36m\033[2J");//clear screen
+	Init_Timer();
+	t4_init();
+	Init_GPIO_EXTI8();//D5
+	Init_GPIO_interrup_HAL();//D4
+	printf("\033c\033[36m\033[2J");
 	fflush(stdout);
-	while (1) {
-		// Main loop code goes here
-		switch(task){//switch to different update function by task
-		case 11: task1_reg_update(); break;
-		case 12: break;
-		case 2: break;
-		case 3:	break;
-		case 4:
-			t4_update();
-			break;
-		}
+	while(1){
+		t4_update();
 	}
 }
 
-//
-//
-// -- Utility Functions ------
-//
-void task1_reg_update(){
-	if(set){//check whether button interrupted
-		HAL_Delay(10);
-		if(GPIOC->IDR & 0x100 == 0x100)//check for jitter
-			printf("Interrupted\r\n");
-		set=0;//reset interrupt flag
-	}
+void Init_GPIO_interrup_HAL(){
+	GPIO_InitTypeDef GPIO_InitStruct;
+	HAL_Init();
+
+	//GPIO port J clock enable
+	__HAL_RCC_GPIOJ_CLK_ENABLE();
+	__HAL_RCC_SYSCFG_CLK_ENABLE();
+
+	GPIO_InitStruct.Pin = GPIO_PIN_0;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	HAL_GPIO_Init(GPIOJ, &GPIO_InitStruct);
+
+	HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
+
+void EXTI0_IRQHandler(){
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+	averageScore = 0;
+	iterations = 0;
+	time=0;
+	stage=0;
+	printf("\033c\033[36m\033[2J");
+}
+
+
 
 void t4_init(){
 	printf("\033[2J\033[37;40m");//clear screen and set attriibute
 	fflush(stdout);
 }
+
 
 void t4_update(){//update due to stage
 	if(stage==0){//init state
@@ -111,11 +105,12 @@ void t4_update(){//update due to stage
 		stage=3;
 		time=0;
 		blinkScreen();
+		set=0;
 		return;
 	}
 	if(stage==3){//wait until button pushed
 		if(set){
-			HAL_Delay(50);
+			HAL_Delay(10);
 			if(GPIOC->IDR & 0x100 == 0x100){//jitter check
 				int temp=time;
 				averageScore=(averageScore*iterations+temp)/(iterations+1);//calculate average score
@@ -132,7 +127,6 @@ void t4_update(){//update due to stage
 				fflush(stdout);
 			}
 			set=0;
-			HAL_Delay(50);
 			return;
 		}
 	}
@@ -200,8 +194,11 @@ void Init_GPIO_EXTI8() {
 	asm ("nop");
 	asm ("nop");
 
+	// Set Pin 13/5 to output. (LED1 and LED2)
+	//GPIOJ->MODER
+
 	// GPIO Interrupt
-	// By default pin PA0 will trigger the interrupt, change EXTICR8 to route proper pin
+	// By default pin PA0 will trigger the interrupt, change EXTICR3 to route proper pin
 	SYSCFG->EXTICR[2] |= SYSCFG_EXTICR3_EXTI8_PC;// EXTICR1-4 are confusingly an array [0-3].
 
 	// Set Pin 8 as input (button) with pull-down.
@@ -216,6 +213,8 @@ void Init_GPIO_EXTI8() {
 	// Register for rising edge.
 	EXTI->RTSR|=EXTI_RTSR_TR8;
 
+	// And register for the falling edge.
+	//EXTI->FTSR|=EXTI_FTSR_TR8;
 }
 
 //
@@ -227,12 +226,6 @@ void TIM6_DAC_IRQHandler() {
 	TIM6->SR &= 0xFFFFFFFE;
 	// Other code here:
 	time+=1;
-	if(task==2){
-		printf("\033[2;30H");
-		fflush(stdout);
-		printf("  %d.%d  ",time/10,time%10);
-		fflush(stdout);
-	}
 	if(task==4){
 		if(stage==3){// wait for user to stop, print time
 			printf("\033[1;30H");
@@ -257,19 +250,3 @@ void EXTI9_5_IRQHandler() {
 	asm ("nop");
 }
 
-//HAL - GPIO/EXTI Handler
-void xxx_IRQHandler() {
-	//HAL_GPIO_EXTI_IRQHandler(???);
-}
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-	// ISR code here.
-}
-
-
-// For the HAL timer interrupts, all of the associated Callbacks need to exist,
-// otherwise during assembly, they will generate compiler errors as missing symbols
-// Below are the ones that are not used.
-
-// void HAL_TIMEx_BreakCallback(TIM_HandleTypeDef *htim){};
-// void HAL_TIMEx_CommutationCallback(TIM_HandleTypeDef *htim){};

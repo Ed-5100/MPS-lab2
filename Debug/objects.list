@@ -1,4 +1,4 @@
-"src/Lab02_intrpt.o"
+"src/Task4.o"
 "src/init.o"
 "src/uart.o"
 "startup/startup_stm32f769xx.o"

@@ -224,16 +224,16 @@ void Init_GPIO_EXTI8() {
 void TIM6_DAC_IRQHandler() {
 	// Clear Interrupt Bit
 	TIM6->SR &= 0xFFFFFFFE;
+	while(TIM6->SR & 0x01);//wait until actually set
 	// Other code here:
 	time+=1;
-	if(task==4){
-		if(stage==3){// wait for user to stop, print time
-			printf("\033[1;30H");
-			fflush(stdout);
-			printf("  %d.%d  ",time/10,time%10);
-			fflush(stdout);
-		}
+	if(stage==3){// wait for user to stop, print time
+		printf("\033[1;30H");
+		fflush(stdout);
+		printf("  %d.%d  ",time/10,time%10);
+		fflush(stdout);
 	}
+
 	asm ("nop");
 	//printf("%u",TIM6->ARR);
 	//fflush(stdout);

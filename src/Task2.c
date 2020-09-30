@@ -18,7 +18,7 @@ void TIM6_DAC_IRQHandler();
 int main(){
 	Sys_Init();
 	Init_Timer();
-	printf("\033c\033[36m\033[2J");
+	printf("\033c\033[36m\033[2J\033[?25l");
 	fflush(stdout);
 
 	while(1){
@@ -63,7 +63,7 @@ void Init_Timer() {
 void TIM6_DAC_IRQHandler() {
 	// Clear Interrupt Bit
 	TIM6->SR &= 0xFFFFFFFE;
-
+	while(TIM6->SR & 0x01);//wait until actually set
 	// Other code here:
 	time+=1;
 }

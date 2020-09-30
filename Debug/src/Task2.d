@@ -1,4 +1,4 @@
-src/Task4.o: ../src/Task4.c \
+src/Task2.o: ../src/Task2.c \
  C:/Users/xieyu/Documents/Microprocessor/lab2/inc/init.h \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Device/ST/STM32F7xx/Include/stm32f769xx.h \
  C:/Users/xieyu/Documents/Microprocessor/stm32lib/CMSIS/Include/core_cm7.h \
